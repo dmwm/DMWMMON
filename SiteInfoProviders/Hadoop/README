@@ -2,4 +2,9 @@ Tools for Hadoop storage technology.
 --------------------------------------------------------- 
 Please update this README file with a short description 
 for newly added tools and scripts. 
-Use subdirectory 'examples' to store samples of storage dump.
+
+2013-12-27 N.Ratnikova added code from UCSD:
+* check_single_file.sh 
+- check a single file and output PFN,Size,Time stamp and check sum (optional)
+- can be used with 'find' on hadoop data area mounted with FUSE
+- more details in https://savannah.cern.ch/support/index.php?126344#comment22
