@@ -6,7 +6,7 @@ T2_CH_CERN  (Rapolas)
 
 #Command:            
 
-eoscms find -f --size --ctime --checksum /eos/cms/store/ |grep eos| sed "s|=| |g" | awk '{print $2"|"$4"|"$8"|"$6}' > eos_dump.txt;
+eoscms find -f --size --ctime --checksum /eos/cms/store/ |grep eos| sed "s|=| |g" | awk '{print $2"|"$4"|"$8"|"$6}' > eos_dump.`date +%s`.txt;
 
 #Comments:  
 
