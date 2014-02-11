@@ -153,31 +153,30 @@ if __name__ == '__main__':
 ##################################################################
 
     try:
-        myargs = getopts()
-        localpath = myargs.localpath
+       myargs = getopts()
+       localpath = myargs.localpath
 
     except KeyError: 
-        print "missing some mandatory parameters, please run <check_cks.py -h >"
-        sys.exit()
+       print "missing some mandatory parameters, please run <check_cks.py -h >"
+       sys.exit()
 
-    try:
-         
-	for tupla in os.walk(localpath):
-	   if tupla[2]:
-              for file in tupla[2]:
-		         surl = tupla[0]+'/'+file
-		         try:
-                    if "csic_projects" in localpath:
-                       print_storage_dump(surl.replace('/gpfs/csic_projects/cms','/store/user'), get_local_size(surl), get_local_timestamp(surl), 'N/A')
-                    else:
-                       if "/store/user" in tupla[0]:
-                          print_storage_dump(surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), 'N/A')
-                       else:
-    		          #print surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), get_local_cksum(surl)
-                          print_storage_dump(surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), get_local_cksum(surl))                        
-                 except OSError:
-                    pass
+    try:         
+       for tupla in os.walk(localpath):
+          if tupla[2]:
+             for file in tupla[2]:
+                surl = tupla[0]+'/'+file
+                try:
+                   if "csic_projects" in localpath:
+                      print_storage_dump(surl.replace('/gpfs/csic_projects/cms','/store/user'), get_local_size(surl), get_local_timestamp(surl), 'N/A')
+                   else:
+                      if "/store/user" in tupla[0]:
+                         print_storage_dump(surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), 'N/A')
+                      else:
+                         #print surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), get_local_cksum(surl)
+                         print_storage_dump(surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), get_local_cksum(surl))
+                except OSError:
+                   pass
  
     except IndexError:
-        print "The file doesn't exits"
-        pass
+       print "The file doesn't exits"
+       pass
