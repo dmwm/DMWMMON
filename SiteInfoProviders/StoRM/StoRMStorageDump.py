@@ -157,7 +157,7 @@ if __name__ == '__main__':
     try:
        myargs = getopts()
        localpath = myargs.localpath
-       if not adler32: 
+       if not myargs.adler32: 
           # override the function for local checksum calculation
           def get_local_cksum(surl): return 'N/A'           
 
