@@ -9,9 +9,10 @@ T2_US_UCSD (James Letts)
 #!/bin/sh
 begintime=`date +%s`
 OUTFILE="storage-dump-ucsd-2.$begintime.txt"
-echo "BEGIN TIME $begintime `date`" > $OUTFILE
+touch $OUTFILE
+echo "BEGIN TIME $begintime `date`" > $OUTFILE.log
 find /hadoop/cms/store/group /hadoop/cms/phedex -type f -exec ./check_single_file.sh {} \; >> $OUTFILE
-echo "END TIME `date +%s` `date`" >> $OUTFILE 
+echo "END TIME `date +%s` `date`" >> $OUTFILE.log 
 
 #Comments:  
 

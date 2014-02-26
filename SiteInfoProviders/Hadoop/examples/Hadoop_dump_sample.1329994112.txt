@@ -1,7 +1,5 @@
-BEGIN TIME 1329994112 Thu Feb 23 02:48:32 PST 2012
 /hadoop/cms/store/group/egamma_ecal/MinBias/MinBias_2360GeV_EGMSkimV4/8efbca2b2a4341df8523da4e327bd4f5/EGMFirstCollisionSkim_CHANGERUNNUMBER_1.root|550691237|1260815838|N/A
 /hadoop/cms/store/group/egamma_ecal/MinBias/MinBias_2360GeV_EGMSkimV4/8efbca2b2a4341df8523da4e327bd4f5/EGMFirstCollisionSkim_CHANGERUNNUMBER_10.root|531423871|1260816369|N/A
 /hadoop/cms/store/group/egamma_ecal/MinBias/MinBias_2360GeV_EGMSkimV4/8efbca2b2a4341df8523da4e327bd4f5/EGMFirstCollisionSkim_CHANGERUNNUMBER_11.root|548486680|1260815208|N/A
 /hadoop/cms/store/group/egamma_ecal/MinBias/MinBias_2360GeV_EGMSkimV4/8efbca2b2a4341df8523da4e327bd4f5/EGMFirstCollisionSkim_CHANGERUNNUMBER_12.root|532315100|1260815423|N/A
 /hadoop/cms/phedex/store/user/yanjun/cms2-V02-00-12/sweepRoot.o|22528|1277749946|N/A
-END TIME 1329997868 Thu Feb 23 03:51:08 PST 2012
