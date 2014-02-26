@@ -9,7 +9,7 @@ import os
 import sys
 import time
 import subprocess
-#import datetime
+import datetime
 #import urllib
 #import urllib2
 #from xml.dom import minidom
@@ -130,7 +130,8 @@ def getopts():
     from optparse import OptionParser
                     
     parser = OptionParser()
-    parser.add_option('--localpath', '-p', action='store', type='string', dest='localpath', default ='/gpfs/csic_projects/cms/', help='Local prefix to your file system to complete de plfn ')
+    parser.add_option('--localpath', '-p', action='store', type='string', dest='localpath', default ='/store/cms/', help='Local prefix to your file system to complete de plfn ')
+    parser.add_option("--adler32", '-c', action="store_true", help='calculate if necessary and dump adler32 cksum values. Default: false (returns N/A) ')
 
     (opt, arg) = parser.parse_args()
     #check inputs
@@ -149,14 +150,16 @@ if __name__ == '__main__':
    
 
 ###########################Globals################################
-    #Path to file whhere will be written the bad lfns
-    #DumpFile = '/tmp/DumpFile.log.%s' % datetime.date.today()
-    DumpFile = '/tmp/DumpFile.log.%d.txt' % time.time()
+    #Output file: do not change file extentions, it must contain the time stamp. 
+    DumpFile = '/tmp/DumpFile_%s.%d.txt' % ( datetime.date.today(),time.time())
 ##################################################################
 
     try:
        myargs = getopts()
        localpath = myargs.localpath
+       if not adler32: 
+          # override the function for local checksum calculation
+          def get_local_cksum(surl): return 'N/A'           
 
     except KeyError: 
        print "missing some mandatory parameters, please run <check_cks.py -h >"
@@ -168,14 +171,7 @@ if __name__ == '__main__':
              for file in tupla[2]:
                 surl = tupla[0]+'/'+file
                 try:
-                   if "csic_projects" in localpath:
-                      print_storage_dump(surl.replace('/gpfs/csic_projects/cms','/store/user'), get_local_size(surl), get_local_timestamp(surl), 'N/A')
-                   else:
-                      if "/store/user" in tupla[0]:
-                         print_storage_dump(surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), 'N/A')
-                      else:
-                         #print surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), get_local_cksum(surl)
-                         print_storage_dump(surl.replace('/gpfs/gaes/cms',''), get_local_size(surl), get_local_timestamp(surl), get_local_cksum(surl))
+                   print_storage_dump(surl, get_local_size(surl), get_local_timestamp(surl), get_local_cksum(surl))
                 except OSError:
                    pass
  
