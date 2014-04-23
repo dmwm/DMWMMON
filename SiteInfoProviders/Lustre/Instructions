@@ -8,9 +8,12 @@
     find 
 
 size and file date info came from the command 'ls --full-time <file>' command. 
-# Example:
 
- Lustre_dump_sample.txt
+The timestamp of the dump file itself should be encoded in the file  name. 
+
+#Example:
+
+Lustre_dump_sample.1329994112.txt
 
 #More details:
 https://savannah.cern.ch/support/index.php?126346
