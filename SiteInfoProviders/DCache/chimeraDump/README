@@ -1,0 +1,127 @@
+chimera-dump: a python script to get information from the chimera postgresql DB
+Reminder
+
+A dump script will only give a snapshot of the DB. Any information which might take some time like storing information in several tables should be considered and probably redone at a later time to verify and prevent misleading results due to time delays. (For example the Atlas dark data test is done a few days after the dump was created to be sure information is really stored in the LFC)
+Contents
+
+It consists of a cd_conf.py file where the access information for the DB is stored and a python script chimer-dump.py. Both are attached at the bottom as tarball.
+Requirements
+
+It needs to run on a host with access to the chimera postgresql DB. A postgresql python module is needed, supported are:
+
+    postrgres-python
+    psycopg2 
+
+If you know of better behaving modules, please let me now
+
+Furthermore it uses some (more or less) standard python modules:
+
+    sys,time,string
+    xml.sax.saxutils.escape
+    OptionParser?
+    bz2
+    gzip (if requested via an option)
+    sets 
+
+How it works
+
+The main feature is to find the path to every pnfsid via recursion and caching of already known directories
+
+    this means it only loops through all directories once for the first file in a directory
+    and if the parent of the directory is already known it will take the information from the memory
+    It checks for parent-child loops in the database (0.9)
+    It checks for orphaned files/directories (no parents) (0.9)
+    In case of caught errors these are written into a log file (output file name with log in it..;-)
+    It has to join at least two tables to get the informations, but for different extra information different two tables are joined 
+
+But you can use it to look for all files on a certain pool or all files which are on multiple pools or only on a single pool. And now you can look for pnfsids which are not touched. Still keep in mind new files take some time to be registered in the table holding the pool location information. PLEASE do not delete without any verification (esp. of new files)
+Usage
+
+    chimera-dump.py [-h] [-o <output file>] [-c <dump|pool|checksum|disk|atime|fulldump> ][-s <pattern or pool name>] [-v <vo>] [-r <root dir>] [-a] [-f <filename>] [-g] [-d] [-D] 
+
+Some more information:
+
+    With -a you can have a (faster) output in ascii.
+        -a will leave all xml formatting and add the pnfsid at the beginning of each line, this is thought for the admins mostly 
+    With -s you can give a string which has to be in every path or the name of a pool when -c disk
+    Defaults are to make a bz2 xml dump file in /tmp, but you can choose gz files with -g
+        The log file is always in bz2, this takes less space, which might get problematic on the headnode 
+    The default output file is in /tmp/pnfs-dump-<start-time with minutes>, it can be changed with -o
+    With -f you can give an ascii file with one pnfsid per line, which will be used as pattern:
+        Only pathes of files which are in chimera (obviously) and in this files are written to the dump
+            Deleted files have no path any more 
+        This might be handy to find paths of unread files or in case you know which pnfsids are lost and need to know their passes
+        This option might accelerate the script a lot 
+    If your root directory is not named /pnfs you can give the right name with -r <name>
+        This can also be used to find shortened paths 
+    In case of problems there are two different debug modi: -d and -D for more debug information
+        These might inflate the always written log files a lot, please look out for your disk space 
+
+Examples
+
+    python chimera-dump.py -a -s /pnfs/ifh.de/data/atlas
+        Give a bz2 ascii file with all data in Path /pnfs/ifh.de/data/atlas and their size 
+    python chimera-dump.py -v atlas -s /atlas/userdisk/users/leffhalm --check checksum
+        Give a bz2 xml file with all data with /atlas/userdisk/users/leffhalm in their path and there checksum 
+    python chimera-dump.py -s atlas/atlasuserdisk/user08/leffhalm -g
+        Give a gzipped xml file with all data in Path matching atlas/atlasuserdisk/user08/leffhalm without vo entry 
+    ./chimera-dump.py -a --string /mc08.105003.pythia_sdiff.recon.AOD.e344_s456_r545_tid026664 --check pool
+        Give the pool location of all files whose path match the pattern (are in the dataset ;-) as ascii 
+    python chimera-dump.py -a -s pool-01 --check disk
+        Give ascii file with all files on a certain pool 
+    python chimera-dump.py -a --check NoP -g
+        Give ascii of all Files not on any pool compressed with gzip (Files might be in transfer state and arrive on pools later on) 
+    python chimera-dump.py -a -s /pnfs/ifh.de/data/atlas -f pnfsidasciifile
+        Give a bz2 ascii file with all files from pnfsidasciifile in Path /pnfs/ifh.de/data/atlas and their size 
+
+Options
+
+Option Description
+--version show program's version number and exit
+-h, --help show this help message and exit
+-o FILEN, --output=FILEN Name of outputfile, bz2 will be added in any case, xml when -a is not specified
+
+    Default is: /tmp/chimera-dump-<date> 
+
+-s PAT, --string=PAT string which should always be in the Path like /data/atlas/atlasmcdisk, this will filter the output to paths where the string is contained, no wildcards used.
+
+    IMPORTANT: Don,t use the / right before the filename, this is not stored and you won't find any file if you state it
+
+-v VO, --vo=VO None Name of vo: just for xml file
+-a, --ascii output in text, if not present output will be xml
+-r, --root Give another root directory if it is not /pnfs (which is the default)
+-d, --debug Give bz2 compressed logfile with alot of messages
+-D, --Debug A lot of debugging information, this can really create big files
+-c, --check Specify the check which should be used
+
+    <dump|checksum|pool|atime> will give the size|cheksum|pool-location|atime info for all files found
+        be careful with atime: this is the time stamp from the first time chimera knows about the file and seems not to be changed
+    <fulldump> will give all the above mentioned information in one file. This is done via joins over several tables and might be slow...BE CAREFUL
+    <NoP|Mpools|Spools> will search for files <without any|with multiple|with single> location on pools
+        IMPORTANT: It might happen when files are stored into dCache that the pool location is stored with a certain delay
+    <disk> will give all files on the pool matching the given PAT with -s
+    default is dump
+
+-f, --file This should be the name of a file consisting of one pnfsid per line. If given, only pathes for pnfsids which are in this file are given.
+-g use gzip instead of bzip2 as compression
+Performance
+
+    The main query to get all files in the database takes about 2 seconds per 710000 files
+    Than for every new directory a select command will be started, this is very fast
+    Most of the time the program writes to the disk
+    For DESY-ZN Atlas site it took 100 seconds for the xml-file with 710000 files
+    If you know which pnfsids you want to know about, with the -f option you can leave out a lot of directory queries 
+
+Versions/Changelog?
+
+    Version 0.9.1:
+        option -f added
+        escaping xml special characters (Thanks to Marian Zvada for the hint and the code snippet)
+        -c fulldump added, this is not optimal as it joins several tables
+        -c atime added, only first time stamp in DB, not the real atime (which can only be seen on the pool directly)
+        check for right cd_conf.py added 
+
+    Version 0.9:
+        Performance optimized: now it is even faster ;-)
+        Debugging information added
+        possibility to change root-dir added 
