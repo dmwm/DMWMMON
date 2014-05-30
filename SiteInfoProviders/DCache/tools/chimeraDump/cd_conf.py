@@ -38,6 +38,8 @@ sqldict = {
   [("t_locationinfo.ipnfsid,iname,iparent,ilocation","t_locationinfo, t_dirs","t_dirs.ipnfsid in (select ipnfsid from t_locationinfo group by ipnfsid having count(ilocation) > 1) and t_dirs.ipnfsid = t_locationinfo.ipnfsid"),('dCache:location',)], 
 'Spools' : \
   [("t_locationinfo.ipnfsid,iname,iparent,ilocation","t_locationinfo, t_dirs","t_dirs.ipnfsid in (select ipnfsid from t_locationinfo group by ipnfsid having count(ilocation) = 1) and t_dirs.ipnfsid = t_locationinfo.ipnfsid"),('dCache:location',)],
+'cmsdump' : \
+ [("t_dirs.ipnfsid,iname,iparent,isize,date_part('epoch', date_trunc('seconds', t_inodes.iatime)),isum", "t_inodes,t_dirs,t_inodes_checksum", "t_inodes.itype = '32768' and t_dirs.ipnfsid <> '000000000000000000000000000000000000' and t_dirs.ipnfsid = t_inodes.ipnfsid and t_dirs.ipnfsid = t_inodes_checksum.ipnfsid"),('size','dCache:atime','checksum')],
 'fulldump' : \
  [("t_dirs.ipnfsid,iname,iparent,isize,istate,ilocation,date_part('epoch', date_trunc('seconds', t_inodes.iatime)),isum", "t_inodes,t_locationinfo,t_dirs,t_inodes_checksum", "t_dirs.ipnfsid = t_locationinfo.ipnfsid and t_dirs.ipnfsid = t_inodes.ipnfsid and t_dirs.ipnfsid = t_inodes_checksum.ipnfsid"),('size','dCache:state','dCache:location','dCache:atime','checksum')]#,'dCache:pinned','dCache:atime','dCache:mtime')]
 }
