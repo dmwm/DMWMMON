@@ -6,12 +6,23 @@ T2_ES_CIEMAT  (Antonio, Jose)
 
 #Command:            
 
-For chimera based dCache installations chimeraDump one can  use chimeraDump tool provided with dCache: 
-http://trac.dcache.org/wiki/contributed/chimeraDump
+For chimera based dCache installations chimeraDump one can  use chimeraDump tool provided with dCache.
 
-Recommended Version:  0.9.1 
+The tool can be found in this repository (DMWMMON/SiteInfoProviders/DCache/tools/chimeraDump) or in dCache wiki
+(http://trac.dcache.org/wiki/contributed/chimeraDump - Recommended Version:  0.9.1).
 
-For  example of usage see generate_dump.sh script. 
+However, we have slightly modified the tool in our repository to add a dump that generates the information
+CMS needs only, so that it runs faster. 
+
+With regular chimeraDump one would run:
+
+  chimera-dump.py  -s <base_cms_path> -c fulldump -o dcache.cms.dump > dump.log
+
+With modified chimeraDump one needs to run:
+
+  chimera-dump.py -s /pnfs/ciemat.es/data/cms -c cmsdump -o dcache.cms.dump > dump.log
+  
+The result to parse and upload is, in both cases, dcache.cms.dump.
 
 #Comments:  
 
