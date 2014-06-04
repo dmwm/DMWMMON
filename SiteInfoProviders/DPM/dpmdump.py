@@ -52,7 +52,7 @@ while(i<len(sys.argv)):
         rootdir=sys.argv[i+1]
         i=i+2
     elif(sys.argv[i]=='-dbcfg'):
-        cfgfile=sys.argv[i+1].split(',')
+        cfgfile=sys.argv[i+1]
         i=i+2
     elif(sys.argv[i]=='-dirlist'):
         dirlist=sys.argv[i+1].split(',')
