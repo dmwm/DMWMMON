@@ -3,3 +3,40 @@ Tools for StoRM storage technology.
 Please update this README file with a short description 
 for newly added tools and scripts. 
 Use subdirectory 'examples' to store samples of storage dump.
+
+This scripts should work with any posix file systemswith support for
+extended attributes of filesystem objects (setfattr, getfattr)
+
+Localpath is the string before /store/... 
+
+Python > 2.5 is needed to work properly with adler32 function.
+
+Run to see the avalable options
+./StoRMStorageDump.py -h
+usage: StoRMStorageDumpMP-v3.py [-h] [-a] [-v] [-m] [-c CKSUM] [-d DAYS]
+                                [-n NCORES] -p PATHS [PATHS ...]
+
+Process inline variables
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -a, --all             Storage Dump all the FS under path (overwrite -d
+                        value)
+  -v, --verb            Default silent mode. overwrite -v versbose
+  -m, --1month          Storage Dump files older them 1 Month under path
+                        (overwrite -d value)
+  -c CKSUM, --cksum CKSUM
+                        Look chksum value if it doesn't exist then calc it
+                        (values adler32 (default), md5, sha256, d)
+  -d DAYS, --days DAYS  Dump files at FS newer than "days" (default value 7)
+  -n NCORES, --ncores NCORES
+                        Number of cores to be used (default value 4)
+  -p PATHS [PATHS ...], --paths PATHS [PATHS ...]
+                        Path to look for files, Mandatory
+
+
+Checksum calc could be slow (depend on the filesystem ), I recommend to run from disk server.
+
+Output file is written under exec directory, and tmp files under /tmp, if you want a clean run,
+please before exec the script clean the /tmp/Dump* files.
+

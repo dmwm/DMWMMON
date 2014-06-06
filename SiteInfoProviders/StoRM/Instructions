@@ -6,13 +6,23 @@ T2_ES_IFCA (Iban Cabrillo)
 
 #Command:            
 
-StoRMStorageDump.py 
+StorageDump.py 
 
 #Usage example:
 
+#Calc and store the size and time creation but no cksum under paths ../store/mc and ../store/data
+./StorageDump.py -p /gpfs/gaes/cms/store/mc /gpfs/gaes/cms/store/data ...
+
+#Calc and store the size and time creation and adler32 (this could be slowwwwww...) cksum under paths ../store/mc and ../store/data
+./StorageDump.py -c adler32 -p /gpfs/gaes/cms/store/mc /gpfs/gaes/cms/store/data ...
+
+#Calc and store the size and time creation but no cksum under paths ../store/mc and ../store/data
+./StorageDump.py -p /gpfs/gaes/cms/store/mc /gpfs/gaes/cms/store/data ....
+
+
 #Comments:  
 This script look for these values, "file size (bytes), "file creation date" (epoch s) and "checksum" stored as extra attribute, if one or more of these vales are not found, the script then calc it and store. This values are accesible using the getfattr -d "pfn"
-
+The output file is unique (a merge for the differents paths files stored in /tmp)
 
 #More details:
 https://savannah.cern.ch/support/index.php?126352
