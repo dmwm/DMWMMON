@@ -3,16 +3,32 @@
 #Reference Site:     
     T2_FR_GRIF_LLR
 
-#Command 
-dpmdump.py
+#Command
+dpmdump.py/dpmdump_v2.py
 
 #Usage example:
 
 dpmdump.py -rootdir /dpm/in2p3.fr/home/cms/trivcat -dirlist "/store/mc","/store/data","/store/generator","/store/results","/store/hidata","/store/himc","/store/lumi","/store/relval" -delay 2592000 -out T2_FR_GRIF_LLR_storage_dump.xml -only_csum 
 
+dpmdump_v2.py  -rootdir /dpm/in2p3.fr/home/cms/trivcat -dirlist "/store/mc","/store/data","/store/generator","/store/results","/store/hidata","/store/himc","/store/lumi","/store/relval" -out T2_FR_GRIF_LLR_storage_dump.xml
+
 #Comments: 
+Note that the -delay and -only_csum flags are not accepted by dpmdump_v2
+
+The two scripts provide the same results with rather different methods
+- dpmdump.py queries mysql far ALL the files 
+- dpmdump_v2.py recursively spans the directory tree from the base directories
+
+On a CMS only file (e.g. T2_FR_GRIF_LLR) dpmdump.py runs faster but,
+when a site has a much wider namespace (for example sites having mani
+small files from some other vos) the load on the database can get to
+the point that the scripts takes hours to run (and often crashes). In
+these cases dpmdump_v2 seems to be more convenient.
+
 Beware of DPM bug which  affects files ctime when cksum is recorded:
     https://svnweb.cern.ch/trac/lcgdm/ticket/449
+
+
 
 #More details:
 https://savannah.cern.ch/support/index.php?126351
