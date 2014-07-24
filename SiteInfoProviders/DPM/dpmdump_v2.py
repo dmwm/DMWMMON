@@ -94,7 +94,7 @@ def print_header(outfile):
     fhandle=open(outfile,'w')
     curtime=datetime.datetime.isoformat(datetime.datetime.now())
     header="<?xml version="+'"'+"1.0"+'"'+" encoding="+'"'+"iso-8859-1"+'"'+"?>"
-    header=header+"<nocsum recorded=" + '"' + curtime + '"' + "><for>vo:cms</for>"+"\n"+"<entry-set>"+"\n"
+    header=header+"<dump recorded=" + '"' + curtime + '"' + "><for>vo:cms</for>"+"\n"+"<entry-set>"+"\n"
     fhandle.write(header)
     fhandle.close()
 
