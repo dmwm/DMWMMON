@@ -3,3 +3,8 @@ Tools for DCache storage technology.
 Please update this README file with a short description 
 for newly added tools and scripts. 
 Use subdirectory 'examples' to store samples of storage dump.
+
+Another storage dump tool developed by Fred Stober from KIT is available at:
+https://github.com/FredStober/chimera-list
+Example borrowed from http://ekphappyface.physik.uni-karlsruhe.de/upload/gridka/chimera.example
+is put in examples/gridka_chimera.example
