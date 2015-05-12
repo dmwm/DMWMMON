@@ -3,3 +3,8 @@ Tools for LStore storage technology.
 Please update this README file with a short description 
 for newly added tools and scripts. 
 Use subdirectory 'examples' to store samples of storage dump.
+
+run lstoredump.sh to list all files in /cms/* .
+It uses a command (lio_getattr) from Alan Tackett.
+Need "setpkgs -a lio" before running.
+
