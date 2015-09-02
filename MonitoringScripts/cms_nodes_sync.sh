@@ -10,12 +10,20 @@
 #####
 # For temporary files under /tmp
 tmpwork=`mktemp -d` 
+
 function cleanup {
 	# Perform program exit housekeeping
 	rm -r $tmpwork
 	exit $1
 }
 trap cleanup SIGHUP SIGINT SIGTERM
+
+function print_title {
+  for i in {1..70}; do echo -n "#"; done
+  echo -e "\n#   $1"
+  for i in {1..70}; do echo -n "#"; done
+  echo
+}
 
 # URLs for the nodes lists: 
 
@@ -75,36 +83,28 @@ $dmwmmon_list
 
 # Constructing the report message: 
 
-echo -e "\n########################################################\n\
-# Comparing lists of node names from the following sources : \n\
+print_title "Comparing lists of node names from the following sources : " >> $report
+echo -e "\
 #     $sitedb_nodes_url \n\
 #     $phedex_nodes_url \n\
-#     $dmwmmon_nodes_url " >> $report
+#     $dmwmmon_nodes_url \n" >> $report
 
-echo -e "########################################################\n\
-#    Nodes in SITEDB and not in TMDB: \n\
-########################################################" >> $report
+print_title "Nodes in SITEDB and not in TMDB: " >> $report
 for f in `cat $sitedb_list`
 do grep -q $f $phedex_list || echo "     $f" >> $report
 done 
 
-echo -e "\n########################################################\n\
-#    Nodes in TMDB  and not in SITEDB: \n\
-########################################################" >> $report
+print_title "Nodes in TMDB and not in SITEDB: " >> $report
 for f in `cat $phedex_list`
 do grep -q $f $sitedb_list || echo "     $f" >> $report
 done 
 
-echo -e "\n########################################################\n\
-#    Nodes in DMWMMON  and not in SITEDB: \n\
-########################################################" >> $report
+print_title "Nodes in DMWMMON  and not in SITEDB:" >> $report
 for f in `cat $dmwmmon_list`
 do grep -q $f $sitedb_list || echo "     $f" >> $report
 done 
 
-echo -e "\n########################################################\n\
-#    Nodes in SITEDB and not in DMWMMON: \n\
-########################################################" >> $report
+print_title "Nodes in SITEDB and not in DMWMMON: " >> $report
 for f in `cat $sitedb_list`
 do grep -q $f $dmwmmon_list || echo "     $f" >> $report
 done
