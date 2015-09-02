@@ -82,12 +82,11 @@ $cat_cmd $dmwmmon_out | $awk_cmd -F\'  '/NAME/ {print $4}' | sort -u  > \
 $dmwmmon_list
 
 # Constructing the report message: 
-
-print_title "Comparing lists of node names from the following sources : " >> $report
-echo -e "\
+echo "#  Report created on "  `date` >> $report
+print_title "Comparing lists of node names from the following sources : \n\
 #     $sitedb_nodes_url \n\
 #     $phedex_nodes_url \n\
-#     $dmwmmon_nodes_url \n" >> $report
+#     $dmwmmon_nodes_url " >> $report
 
 print_title "Nodes in SITEDB and not in TMDB: " >> $report
 for f in `cat $sitedb_list`
