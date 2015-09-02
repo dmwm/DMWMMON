@@ -19,9 +19,9 @@ trap cleanup SIGHUP SIGINT SIGTERM
 
 # URLs for the nodes lists: 
 
-sitedb_nodes="http://cmsweb.cern.ch/sitedb/data/prod/site-names"
-phedex_nodes="https://cmsweb.cern.ch/phedex/datasvc/perl/prod/nodes"
-dmwmmon_nodes="https://cmsweb.cern.ch/dmwmmon/datasvc/perl/nodes"
+sitedb_nodes_url="http://cmsweb.cern.ch/sitedb/data/prod/site-names"
+phedex_nodes_url="https://cmsweb.cern.ch/phedex/datasvc/perl/prod/nodes"
+dmwmmon_nodes_url="https://cmsweb.cern.ch/dmwmmon/datasvc/perl/nodes"
 
 # Specify all commands with a full path for a cron job to find them
 # NOTE: these setting may differ on various systems
@@ -34,20 +34,77 @@ cat_cmd=/bin/cat
 # TODO: add existence check 
 myproxy=`${proxy_info_cmd} -path`
 
+# Temporary files: 
+sitedb_out=${tmpwork}/sitedb.out
+sitedb_list=${tmpwork}/sitedb.phedex-nodes.list
+phedex_out=${tmpwork}/phedex_datasvc.out
+phedex_list=${tmpwork}/phedex.datasvc-nodes.list
+dmwmmon_out=${tmpwork}/dmwmmon_datasvc.out
+dmwmmon_list=${tmpwork}/dmwmmon.datasvc-nodes.list
+report=${tmpwork}/report.txt
+
 #####
 # Getting list of phedex nodes from the siteDB:
 
-$wget_cmd --no-check-certificate --certificate=$myproxy --private-key=$myproxy --ca-certificate=$myproxy  --ca-directory=/etc/grid-security/certificates -O ${tmpwork}/sitedb.out $sitedb_nodes
-$cat_cmd ${tmpwork}/sitedb.out |  $awk_cmd -F\" '/"phedex"/ {print $6}' | sort -u  > ${tmpwork}/sitedb.phedex-nodes.list
+$wget_cmd --no-check-certificate --certificate=$myproxy \
+--private-key=$myproxy --ca-certificate=$myproxy \
+-O  $sitedb_out $sitedb_nodes_url
+
+$cat_cmd $sitedb_out | $awk_cmd -F\" '/"phedex"/ {print $6}' | sort -u > \
+$sitedb_list
 
 #####
 # Getting list of phedex nodes from phedex datasvc:
 
-$wget_cmd --no-check-certificate --certificate=$myproxy --private-key=$myproxy --ca-certificate=$myproxy  --ca-directory=/etc/grid-security/certificates -O ${tmpwork}/phedex_datasvc.out $phedex_nodes
-$cat_cmd ${tmpwork}/phedex_datasvc.out |  $awk_cmd -F\'  '/NAME/ {print $4}' | sort -u > ${tmpwork}/phedex.phedex-nodes.list
+$wget_cmd --no-check-certificate --certificate=$myproxy \
+--private-key=$myproxy --ca-certificate=$myproxy  \
+-O $phedex_out $phedex_nodes_url
+
+$cat_cmd $phedex_out |  $awk_cmd -F\'  '/NAME/ {print $4}' | sort -u > \
+$phedex_list
 
 #####
 # Getting list of phedex nodes from dmwmmon datasvc:
 
-$wget_cmd --no-check-certificate --certificate=$myproxy --private-key=$myproxy --ca-certificate=$myproxy  --ca-directory=/etc/grid-security/certificates -O ${tmpwork}/dmwmmon_datasvc.out $dmwmmon_nodes
-$cat_cmd ${tmpwork}/dmwmmon_datasvc.out |  $awk_cmd -F\'  '/NAME/ {print $4}' | sort -u  > ${tmpwork}/dmwmmon.phedex-nodes.list
+$wget_cmd --no-check-certificate --certificate=$myproxy \
+--private-key=$myproxy --ca-certificate=$myproxy \
+-O $dmwmmon_out $dmwmmon_nodes_url
+
+$cat_cmd $dmwmmon_out | $awk_cmd -F\'  '/NAME/ {print $4}' | sort -u  > \
+$dmwmmon_list
+
+# Constructing the report message: 
+
+echo -e "\n########################################################\n\
+# Comparing lists of node names from the following sources : \n\
+#     $sitedb_nodes_url \n\
+#     $phedex_nodes_url \n\
+#     $dmwmmon_nodes_url " >> $report
+
+echo -e "########################################################\n\
+#    Nodes in SITEDB and not in TMDB: \n\
+########################################################" >> $report
+for f in `cat $sitedb_list`
+do grep -q $f $phedex_list || echo "     $f" >> $report
+done 
+
+echo -e "\n########################################################\n\
+#    Nodes in TMDB  and not in SITEDB: \n\
+########################################################" >> $report
+for f in `cat $phedex_list`
+do grep -q $f $sitedb_list || echo "     $f" >> $report
+done 
+
+echo -e "\n########################################################\n\
+#    Nodes in DMWMMON  and not in SITEDB: \n\
+########################################################" >> $report
+for f in `cat $dmwmmon_list`
+do grep -q $f $sitedb_list || echo "     $f" >> $report
+done 
+
+echo -e "\n########################################################\n\
+#    Nodes in SITEDB and not in DMWMMON: \n\
+########################################################" >> $report
+for f in `cat $sitedb_list`
+do grep -q $f $dmwmmon_list || echo "     $f" >> $report
+done
