@@ -19,11 +19,15 @@ function cleanup {
 trap cleanup SIGHUP SIGINT SIGTERM
 
 function print_title {
-  for i in {1..70}; do echo -n "#"; done
+  for i in {1..60}; do echo -n "#"; done
   echo -e "\n#   $1"
-  for i in {1..70}; do echo -n "#"; done
+  for i in {1..60}; do echo -n "#"; done
   echo
 }
+function occurrence {
+  grep -q $1 $2 && echo -n "|    +    " || echo -n "|    -    ";
+}
+
 
 # URLs for the nodes lists: 
 
@@ -50,6 +54,7 @@ phedex_list=${tmpwork}/phedex.datasvc-nodes.list
 dmwmmon_out=${tmpwork}/dmwmmon_datasvc.out
 dmwmmon_list=${tmpwork}/dmwmmon.datasvc-nodes.list
 report=${tmpwork}/report.txt
+summary=${tmpwork}/summary.txt
 
 #####
 # Getting list of phedex nodes from the siteDB:
@@ -107,3 +112,20 @@ print_title "Nodes in SITEDB and not in DMWMMON: " >> $report
 for f in `cat $sitedb_list`
 do grep -q $f $dmwmmon_list || echo "     $f" >> $report
 done
+
+# Creating a summary table:
+summary_header='NODE NAME               | SITEDB  | TMDB    | DMWMMON |'
+rm -f $summary
+
+echo -e "\nInconsistent node names found on" `date`"\n" > $summary
+print_title "$summary_header" >> $summary
+for node in `cat $sitedb_list $phedex_list $dmwmmon_list | sort -u`
+do
+    printf "| %-25s "  $node
+    occurrence $node $sitedb_list
+    occurrence $node $phedex_list
+    occurrence $node $dmwmmon_list
+    echo "|"
+done | grep -v '  +    |    +    |    +  ' >>  $summary 
+print_title "$summary_header" >> $summary
+cat $summary
