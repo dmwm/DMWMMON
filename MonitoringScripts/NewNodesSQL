@@ -29,7 +29,7 @@ echo " Current max ID : " $max_id
 let next_id=max_id+1
 for n in `echo $1 | tr "," " " ` ; do 
   # Basic sanity check for node names:
-  if [ `echo $n | grep '^T' ` != $n ]
+  if [ `echo $n | grep '^T' `sfx != ${n}sfx ]
   then
     echo "Node name does not pass the sanity check: $n"
     continue
