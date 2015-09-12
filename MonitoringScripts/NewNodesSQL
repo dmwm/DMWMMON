@@ -39,8 +39,10 @@ for n in `echo $1 | tr "," " " ` ; do
   echo "Added: $n "
   let next_id=next_id+1
 done
-
+echo "quit;" >>  $sql_script
 echo
-echo "Please inspect the $sql_script and if looks correct execute as follows:"
-echo "\$(OracleConnectId -db \$DBPARAM) @"$sql_script
+echo "Please inspect the script:
+echo "   $sql_script" 
+echo "and if everything is correct, execute it as follows:"
+echo "    sqlplus \$(OracleConnectId -db \$DBPARAM) @"$sql_script
 echo
