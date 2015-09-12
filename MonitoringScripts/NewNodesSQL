@@ -34,8 +34,8 @@ for n in `echo $1 | tr "," " " ` ; do
     echo "Node name does not pass the sanity check: $n"
     continue
   fi
-  let next_id=next_id+1
   # insert into t_adm_node (ID, NAME) VALUES ( 169, 'T2_MY_UPM_BIRUNI');
   echo "insert into t_adm_node (ID, NAME) VALUES ("$next_id", '"$n"');" >> $sql_script
   echo "Added: $n "
+  let next_id=next_id+1
 done
