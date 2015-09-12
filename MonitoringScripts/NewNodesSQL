@@ -1,0 +1,31 @@
+#!/bin/sh
+# N. Ratnikova Sep, 11, 2015
+# NewNodesSQL
+#  - takes a comma separated list of new node names as first argument
+#  - assigns next ID based on the current max node ID
+#  - relies on OracleConnectId and proper DBPARAM for accessing as DB admin,
+#    documented elsewhere (see PhEDEx or SpaceMon internal docs)
+#  - creates sql script in temporary directory under /tmp, which can be 
+#    inspected and executed manually. 
+#####
+# Borrow  secure connection method from PhEDEx :  
+
+secure_connect=$(OracleConnectId -db $DBPARAM)
+
+tmpwork=`mktemp -d` 
+sql_script=${tmpwork}/newnodes.sql
+touch $sql_script
+
+function cleanup {
+	rm -r $tmpwork
+	exit $1
+}
+trap cleanup SIGHUP SIGINT SIGTERM
+
+max_id=`echo "select max(id) from t_adm_node;" | sqlplus $secure_connect | grep -A 1 '^-------' | tail -1 | awk '{print $1}'`
+
+for n in `echo $1 | tr "," " " ` ; do 
+  let next_id=max_id+1
+  # insert into t_adm_node (ID, NAME) VALUES ( 169, 'T2_MY_UPM_BIRUNI');
+  echo "insert into t_adm_node (ID, NAME) VALUES ("$next_id", '"$n"');" >> $sql_script
+done
