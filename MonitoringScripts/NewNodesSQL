@@ -26,9 +26,14 @@ trap cleanup SIGHUP SIGINT SIGTERM
 max_id=`echo "select max(id) from t_adm_node;" | sqlplus $secure_connect | grep -A 1 '^-------' | tail -1 | awk '{print $1}'`
 
 echo " Current max ID : " $max_id
-
+let next_id=max_id+1
 for n in `echo $1 | tr "," " " ` ; do 
-  let next_id=max_id+1
+  # Basic sanity check for node names:
+  if [ `echo $n | grep '^T' ` != $n ]
+    echo "Node name does not pass the sanity check: $n"
+    continue
+  fi
+  let next_id=next_id+1
   # insert into t_adm_node (ID, NAME) VALUES ( 169, 'T2_MY_UPM_BIRUNI');
   echo "insert into t_adm_node (ID, NAME) VALUES ("$next_id", '"$n"');" >> $sql_script
   echo "Added: $n "
