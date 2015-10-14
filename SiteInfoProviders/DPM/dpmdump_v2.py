@@ -51,9 +51,7 @@ def get_dirs(conn,current):
     return ret
 
 def get_id(directory):
-    proc=subprocess.Popen("/usr/bin/dpns-ls -id %s|awk '{print $1}'"%directory,stdout=subprocess.PIPE,shell=True)
-    (output,error)=proc.communicate()
-    p_status = proc.wait()
+    output=subprocess.Popen(["dpns-ls", "-id", directory], stdout=subprocess.PIPE).stdout.read().split()[0]
     return output
 
 def print_files(fhandle,conn,current):
