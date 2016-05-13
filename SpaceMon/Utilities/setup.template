@@ -1,0 +1,12 @@
+# Template for creating development environment setup script
+# To create and run environmenr setup script:
+#   $ cd DMWMMON/SpaceMon 
+#   $ make 
+#   $ .  Utilities/setup.sh
+#
+
+unset PERL5LIB
+SPACEMON_ROOT=%sourcedir%
+export DMWMMON_ROOT=`dirname $(dirname $SPACEMON_ROOT)`
+export PERL5LIB=$DMWMMON_ROOT:$PERL5LIB
+export PATH=$SPACEMON_ROOT/Utilities:$PATH
