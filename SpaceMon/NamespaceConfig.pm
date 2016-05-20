@@ -261,9 +261,8 @@ sub find_top_parents {
     # empty string as well ...
     my $dirname = shift @parents;
     my @rules = keys %{$node};
-    #show_rules($node);
     my $rule = shift @rules;  # rule for rootdir always exist and matches "/"
-    my $found = 1;
+    my $found;
     my ($mother, $depth ) = split("=", $rule);
     push @topparents, $mother;
     # Go to the next level:
@@ -273,11 +272,10 @@ sub find_top_parents {
     while ( $dirname = shift @parents ) {
 	# Look for match in configuration:
 	@rules = keys %{$node};
-
+	$found = 0;
 	while ( $rule = shift @rules ) {
 	    my ($n,$d) = split("=", $rule);
 	    if ($n eq $dirname."/") {
-		$found = 1;
 		if ($d < 0) {
 		    print "WARNING: skipping path: $path \n";
 		    print "         matching negative rule: ".$rule."\n";
@@ -285,33 +283,36 @@ sub find_top_parents {
 		}
 		$mother .= $dirname."/";
 		push @topparents, $mother;
-		$depth = $d;
+		# Deal with the previously defined strong rules:
+		$depth -=1;
+		if ($d > $depth) {
+		    $depth = $d;
+		}
 		$node = $node->{$rule};
 		# Go to the next level:
+		$found = 1;
 		last;
 	    }
-	    # If we got here, there is no matching rule:
-	    $found = 0;
 	}
-	if ( not $found ) {
-	    # We did not find any matching rules on this node,
-	    # But we still want this dirname and its subdirectories included
-	    # according to the depth setting for the last matching rule:
-	    return @topparents if ( $depth == 0 );
-	    $mother .= $dirname."/";
-	    push @topparents, $mother;
-	    $depth -= 1;
-	    while ( $depth > 0 ) {
-		if ($dirname = shift @parents) {
-		    $mother .= $dirname."/";
-		    push @topparents, $mother;
-		    $depth -= 1;
-		} else {
-		    return @topparents;
-		}
+	$found and next;
+	# If we got here, there is no matching rule:
+	# We did not find any matching rules on this node,
+	# But we still want this dirname and its subdirectories included
+	# according to the depth setting for the last matching rule:
+	return @topparents if ( $depth == 0 );
+	$mother .= $dirname."/";
+	push @topparents, $mother;
+	$depth -= 1;
+	while ( $depth > 0 ) {
+	    if ($dirname = shift @parents) {
+		$mother .= $dirname."/";
+		push @topparents, $mother;
+		$depth -= 1;
+	    } else {
+		return @topparents;
 	    }
-	    return @topparents;
 	}
+	return @topparents;
     }
     return @topparents;
 }
