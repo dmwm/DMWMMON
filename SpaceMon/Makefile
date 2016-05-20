@@ -6,11 +6,10 @@
 
 .PHONY: install
 
-sourcedir = `pwd`
+sourcedir = $(shell pwd)
 template = Utilities/setup.template
 
 install: Utilities/setup.sh
 
 Utilities/setup.sh: $(template)
 	cat $(template) | sed s'|%sourcedir%|$(sourcedir)|' > Utilities/setup.sh
-#Utilities/setup.template:
