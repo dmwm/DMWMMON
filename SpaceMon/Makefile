@@ -11,5 +11,5 @@ template = Utilities/setup.template
 
 install: Utilities/setup.sh
 
-Utilities/setup.sh: $(template)
+Utilities/setup.sh: $(template) Makefile
 	cat $(template) | sed s'|%sourcedir%|$(sourcedir)|' > Utilities/setup.sh
