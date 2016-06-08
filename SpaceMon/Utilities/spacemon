@@ -32,8 +32,8 @@ use DMWMMON::SpaceMon::Core;
 my $me = basename($0);
 
 # Variables for handling command line options:
-my ($defaults, $debug, $verbose, $upload, $save, $url, $node, $storagedump,
-    $configfile, $testnode);
+my ($defaults, $debug, $verbose, $upload, $save, $show, $url, $node,
+     $storagedump, $configfile, $testnode);
 # Here you can override class defaults:
 $debug = $verbose = 0;
 # Variables for spacemon objects:
@@ -55,7 +55,6 @@ GetOptions (
 		      exit;},
     'defaults' => sub { &show_defaults },
     'check-auth' => sub { &check_auth },
-	     'save-record:s'   => \$save,
     # SpaceMon mandatory options:
     'node=s' => \$node,
     'dump=s' => \$storagedump,
@@ -66,6 +65,9 @@ GetOptions (
     'verbose!' => \$verbose,
     'url=s' => \$url,
     'config:s' => \$configfile,
+    # Options for additional actions:
+    'save-record:s'   => \$save,
+    'show-record'   => \$show,
     );
 
 sub usage
@@ -208,8 +210,10 @@ if ($save) {
     print $record->dump();
 }
 
+if ($show) {
+    $rio->show($record);
+}
+
 if ($upload) {
     $rio->upload($record);
 }
-
-#$rio->show($record);
