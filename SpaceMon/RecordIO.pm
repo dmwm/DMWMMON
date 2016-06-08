@@ -4,6 +4,8 @@ use warnings;
 use Data::Dumper;
 use DMWMMON::SpaceMon::Record;
 use DMWMMON::SpaceMon::UserAgent;
+use Math::BigFloat;
+use POSIX qw( strftime );
 
 sub new
 {
@@ -153,21 +155,64 @@ sub uploadRecord{
   print  "Done!\n";
 }
 
-sub show
-{
-    # Print record time stamp and dir sizes in a human readable format up to a certain level of depth. 
-    my $self = shift;
-    my ($record) = (@_);
-    print "I am in ",__PACKAGE__,"->show()\n" if $self->{VERBOSE};
-    print $record->dump();
-}
-
 sub uploadRecordFile
 { # Upload record as a file to some Grid enabled storage. 
     my $self = shift;
     my ($record) = (@_);
     print "I am in ",__PACKAGE__,"->uploadRecordFile()\n" if $self->{VERBOSE};
     return;
+}
+
+sub show
+{
+    # Print record NODE, TIMESTAMP is and DIRS hash in a user friendly format
+    # and sorted in an alphabetic order 
+    # NODE => undef,
+    # TIMESTAMP => undef,
+    # DIRS => {},
+    my $self = shift;
+    my ($record) = (@_);
+    my ($num, $unit);
+     print "I am in ",__PACKAGE__,"->show()\n" if $self->{VERBOSE};
+    print "="x40 . "\n";
+    print "Node: " . $record->{NODE} . "\n";
+    print "Date: " . strftime("%Y-%m-%d %H:%M:%S", localtime($record->{TIMESTAMP} )) . "\n";
+    # sort by path:
+    foreach (sort keys %{$record->{DIRS}}) {
+	($num, $unit ) = toScaledFormat( $record->{DIRS}->{$_} );
+	print "$num   $unit     " . $_ . "\n";
+    }
+    #print $record->dump();
+}
+
+sub toScaledFormat {
+    my  $bignum = Math::BigFloat->new( shift );
+    my  $logbase  = shift   ||  1000;;
+    my  $scaling_lower_limit = 10000;
+    if( $bignum < $scaling_lower_limit ) {
+        return int($bignum);
+    }
+
+    my  @sfx = ( '', qw( KB MB GB TB PB EB ZB YB ) );
+
+    my  $log1000  = $bignum->copy->blog($logbase);
+    my  $pow1000  = int($log1000);
+    my  $wow = exp( ($log1000 - $pow1000) * log($logbase) );
+
+    # It is possible below to round up to our logbase value, which looks
+    #   wrong!  If we would, instead bump up to next power set
+    if( $wow >= ($logbase-0.5) ) {
+        $wow /= $logbase;
+        ++$pow1000;
+    }
+ 
+    # If we are not using a decimal base, we may need to show 1023KB
+    #   or such using four leading digits.  Use an alternate format
+    if( $wow >= 1000 ) {  # If four significant digits
+        return( sprintf("%.4g",$wow), $sfx[$pow1000] );
+    } else {
+        return( sprintf("%.3g",$wow), $sfx[$pow1000] );
+    }
 }
 
 1;
