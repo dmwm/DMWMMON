@@ -38,6 +38,8 @@ sub new
   bless $self, $class;
   $self->init();
   $self->SpaceMonAgent($self->{ME});
+  print "NRDEBUG 1 in UserAgent::new , parameters passed:\n";
+  print Dumper (%params);
   return $self;
 }
 
@@ -200,6 +202,8 @@ EOF
 sub get_auth
 {
     my $self = shift;
+    print "NRDEBUG : testing UserAgent with NOCERT parameter \n";
+    $self->{'NOCERT'} = 1; 
     my %payload = (); # input to data server call
     my ($response, $target);
     $self->Dump() if ($self->{'DEBUG'});
