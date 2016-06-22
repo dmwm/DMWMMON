@@ -121,13 +121,7 @@ sub setNodeStorageMapForDefaults {
 	"node" => $self->{NODE},
 	"lfn" => \@lfns,
 	);
-    $content = $smua->get_pfns(\%payload);
-    # Check for errors returned by phedex data service: 
-    if (exists $content->{'ERROR'} ) {
-	print "ERROR: phedex data service returned an error:\n";
-	print $content->{'ERROR'} . "\n";
-	exit 1;
-    }
+    $content = $smua->get_pfns(\%payload); # rely on get_pfns exit on server failure
     # Get lfn2pfn mapping for global defaults:
     foreach (@{$content->{'PHEDEX'}->{'MAPPING'}}) {
 	$self->{'MAPPING'}->{$_->{'LFN'}} = $_->{'PFN'};
