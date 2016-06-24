@@ -38,6 +38,7 @@ sub new
   bless $self, $class;
   $self->init();
   $self->SpaceMonAgent($self->{ME});
+  print Dumper (%params) if $self->{'DEBUG'};
   return $self;
 }
 
@@ -207,7 +208,13 @@ sub get_auth
     $self->CALL('auth');
     $target = $self->target;
     $response = $self->get($target, \%payload);
-    return  $response->content();
+    my $content =  $response->content();
+    if ($self->response_ok($response)) {
+	return $content;
+    } else {
+	print "Bad response from the server: \n $content\n";
+	exit 1; # Make it fatal failure and exit right here
+    }
 }
 sub get_pfns
 {
@@ -220,16 +227,15 @@ sub get_pfns
     $target = $self->target;
     $response = $self->get($target, $payload);
     $content = $response->content();
-    # NR: next few lines are borrowed from phedex cli handling data service APIs reports:
-    # Make sure the response was a perl object.  If it isn't, then
-    # reformat it into an error object
-    $content =~ s%^[^\$]*\$VAR1%\$VAR1%s; # get rid of stuff before $VAR1
-    no strict 'vars';
-    my $obj = eval($content);
-    if ($@) {
-	$obj = { 'ERROR' => "Server responded with non-perl data:\n$content"};
+    if ($self->response_ok($response)) {
+	print "Server response is OK\n" if $self->{'VERBOSE'};
+	no strict 'vars';
+	my $obj = eval($content);
+	return $obj;
+    } else {
+	print "Bad response from the server: \n $content\n";
+	exit 1; # Make it fatal failure and exit right here
     }
-    return $obj;
 }
 
 1;
