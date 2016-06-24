@@ -3,7 +3,7 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw (version);
 
 sub version(){
-    return "1.0.1-pre3";
+    return "1.0.1-dev";
 }
 
 1;
