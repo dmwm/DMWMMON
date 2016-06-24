@@ -7,7 +7,7 @@ use Getopt::Long;
 
 our @env_keys = ( qw / PROXY DEBUG CERT_FILE KEY_FILE CA_FILE CA_DIR / );
 our %env_keys = map { $_ => 1 } @env_keys;
-our $VERSION = '1.0';
+our $VERSION = '1.0.1';
 our %params =
 	(
 	  URL		=> 'https://cmsweb.cern.ch/dmwmmon/datasvc',
@@ -204,7 +204,16 @@ sub get_auth
     my %payload = (); # input to data server call
     my ($response, $target);
     $self->Dump() if ($self->{'DEBUG'});
-    print " $self->{ME}: reading authentication info from $self->{'URL'}\n";
+    my $seconds = "10";
+    my $proxyfile = $self->{'CERT_FILE'};
+    print "PROXY VALIDITY CHECK for $proxyfile:  ";
+    my $cmd = "/usr/bin/openssl  x509 -in $proxyfile -checkend $seconds -noout";
+    if (system( $cmd ) != 0) {
+	print "WARNING: check failed!\n";
+    } else {
+	print "  still valid!\n";
+    }
+    print "$self->{ME}: reading authentication info from $self->{'URL'}\n";
     $self->CALL('auth');
     $target = $self->target;
     $response = $self->get($target, \%payload);
