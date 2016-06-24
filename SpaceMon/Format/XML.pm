@@ -49,7 +49,7 @@ sub lookupFileSize
     my $self = shift;
     $_ = shift;
     if (m/\S+\sname=\"(\S+)\"\>\<size\>(\d+)\<\S+$/) {
-	print "Processing line: $_     file=$1\n     size=$2\n" if $self->{VERBOSE};
+	#print "Processing line: $_     file=$1\n     size=$2\n" if $self->{VERBOSE};
 	return ($1, $2+0);
     } else {
 	# Because XML cnotains tags other than  file entries, we skip non matching lines without dying.

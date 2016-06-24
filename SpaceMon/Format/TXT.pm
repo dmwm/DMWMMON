@@ -47,7 +47,7 @@ sub lookupFileSize
     my ($file, $size, $rest) = split /\|/;
     if (looks_like_number($size)) {
 	$size+=0;
-	print "Processing line: $_     file=$file\n     size=$size\n" if $self->{VERBOSE};
+	#print "Processing line: $_     file=$file\n     size=$size\n" if $self->{VERBOSE};
 	return ($file, $size);
     } else {
 	&formattingHelp();
