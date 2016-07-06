@@ -61,7 +61,7 @@ sub lookupFileSize
     # Check if line contains a directory name and cache it:
     if (m/^\//) {
 	$self->{DIRNAME} = $_;
-	print "Parsing directory " . $_ . "\n" if $self->{VERBOSE};
+	#print "Parsing directory " . $_ . "\n" if $self->{VERBOSE};
 	return;
     }
     my ($file, $pnfsid, $chksum, $size, $rest) = split /\t/;
@@ -69,7 +69,7 @@ sub lookupFileSize
     if (looks_like_number($size)) {
 	$size+=0;
 	$file = $self->{DIRNAME}. "/" . $file;
-	print "Found match for file: $file and size: $size \n" if $self->{VERBOSE};
+	#print "Found match for file: $file and size: $size \n" if $self->{VERBOSE};
 	return ($file, $size);
     } else {
 	&formattingHelp();

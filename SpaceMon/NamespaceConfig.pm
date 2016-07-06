@@ -105,12 +105,14 @@ sub setNodeStorageMapForDefaults {
     # Create a user agent for getting info from PHEDEX data service.
     # Note that UserAgent allows to override the url with an arbitrary string
     # passed as TARGET.
+    # Use NOCERT flag to skip authentication while reading the mapping
     my ($target, $response, $obj, $content);
     my $smua = DMWMMON::SpaceMon::UserAgent->new (
 	'URL'      => 'https://cmsweb.cern.ch/phedex/datasvc',
 	'DEBUG'    => $self->{'DEBUG'},
 	'VERBOSE'  => $self->{'VERBOSE'},
 	'FORMAT'   => "perl/prod",
+	'NOCERT'   => 1,
 	);
     $smua->Dump() if ($self ->{'DEBUG'});
     # Construct the url to be passed to the data service, lookup for 
