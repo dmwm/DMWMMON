@@ -77,12 +77,13 @@ sub new
     my $class = ref($proto) || $proto;
     my $self = {};
     my %params = (
-                  DEBUG => 1,
-                  VERBOSE => 1,
-                  DUMPFILE => undef,
-                  TIMESTAMP => undef,
-		  DUMPFORMAT => undef,
-                  );
+	DEBUG => 1,
+	VERBOSE => 1,
+	DUMPFILE => undef,
+	TIMESTAMP => undef,
+	DUMPFORMAT => undef,
+	IGNOREBADENTRIES => undef,  # Flag how to process parsing errors, default: undef.
+	);
     my %args = (@_);
     map { if (defined $args{$_}) {$self->{$_} = $args{$_}} else { $self->{$_} = $params{$_}} } keys %params;
     print "I am in ",__PACKAGE__,"->new()\n" if $self->{VERBOSE};
