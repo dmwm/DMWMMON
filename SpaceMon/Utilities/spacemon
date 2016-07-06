@@ -33,7 +33,7 @@ my $me = basename($0);
 
 # Variables for handling command line options:
 my ($defaults, $debug, $verbose, $upload, $save, $show, $url, $node,
-     $storagedump, $configfile, $testnode);
+     $storagedump, $configfile, $testnode, $ignorebadentries);
 # Here you can override class defaults:
 $debug = $verbose = 0;
 # Variables for spacemon objects:
@@ -59,6 +59,7 @@ GetOptions (
     'node=s' => \$node,
     'dump=s' => \$storagedump,
     # Options to override the defaults:
+    'ignore-bad-entries' => \$ignorebadentries,
     'upload-record' => \$upload,
     'test' => \$testnode,
     'debug!' => \$debug,  # enables --nodebug option
@@ -98,7 +99,7 @@ Output and verbosity control options:
 Overriding defaults:
   --url                   overrides default data service url
   --config      <file>    read local configuration rules from the file
-
+  --ignore-bad-entries    do not stop on parsing errors due to bad entriees in storage dump
 EOF
 ;
     &DMWMMON::SpaceMon::UserAgent::auth_usage();
@@ -159,6 +160,7 @@ $dumpfile = DMWMMON::SpaceMon::FormatFactory->instantiate
  DEBUG => $debug,
  VERBOSE => $verbose,
  DUMPFILE => $storagedump,
+ IGNOREBADENTRIES => $ignorebadentries,
 );
 
 print $dumpfile->dump() if $debug;
