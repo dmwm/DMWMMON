@@ -14,6 +14,7 @@ sub new
     my $self = $class->SUPER::new(@_);
     print "I am in ",__PACKAGE__,"->new()\n" if $self->{VERBOSE};
     bless $self, $class;
+    print $self->dump() if $self->{DEBUG};
     return $self;
 }
 
@@ -49,9 +50,13 @@ sub lookupFileSize
 	$size+=0;
 	#print "Processing line: $_     file=$file\n     size=$size\n" if $self->{VERBOSE};
 	return ($file, $size);
+    } elsif ( $self->{IGNOREBADENTRIES} ) {
+	# Print warning about bad entry in stdout and continue
+	print "WARNING: ignored bad entry =>\n       $_";
+	return undef;
     } else {
 	&formattingHelp();
-	die "\nERROR: formatting error in " . __PACKAGE__ . " for line: \n$_" ;
+	die "\nERROR: formatting error in " . __PACKAGE__ . " for line: \n$_";
     }
 }
 
