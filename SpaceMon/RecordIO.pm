@@ -13,10 +13,11 @@ sub new
     my $class = ref($proto) || $proto;
     my $self = {};
     my %params = (
-		  DEBUG => 1,
-		  VERBOSE => 1,
-		  DATASVC => 'https://cmsweb.cern.ch/dmwmmon/datasvc',
-		  );
+	STRICT => 1,
+	DEBUG => 1,
+	VERBOSE => 1,
+	DATASVC => 'https://cmsweb.cern.ch/dmwmmon/datasvc',
+	);
     my %args = (@_);
     map { if (defined $args{$_}) {$self->{$_} = $args{$_}} else { $self->{$_} = $params{$_}} } keys %params;
     print "I am in ",__PACKAGE__,"->new()\n" if $self->{VERBOSE};
@@ -105,7 +106,11 @@ sub upload
     my $self = shift;
     my ($record) = (@_);
     print "I am in ",__PACKAGE__,"->upload()\n" if $self->{VERBOSE};
-    my $result = $self->uploadRecord($ {$record} {'TIMESTAMP'}, $ {$record} {'NODE'}, $ {$record} {'DIRS'});
+    my $result = $self->uploadRecord(
+	$ {$record} {'TIMESTAMP'},
+	$ {$record} {'NODE'},
+	$ {$record} {'DIRS'},
+	);
     return $result;
 }
 
@@ -118,6 +123,7 @@ sub uploadRecord{
   # Adding timestamp and node parameters to the upload hash:
   $hashref->{'timestamp'} = $timestamp;
   $hashref->{'node'} = $node;
+  $hashref->{'strict'} = $self->{'STRICT'};
   #print payload: 
   #while( my ($k, $v) = each %$hashref ) {
   #   print "key: $k, value: $v.\n";
