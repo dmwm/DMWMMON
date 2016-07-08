@@ -51,8 +51,12 @@ sub readFromDatasvc
     my ($date, $datasvc_record, $entry,$response, $target, $timestamp);
     print "RecordIO reading $node record from $self->{'DATASVC'}\n";
     # Get data from the server:
-    my $pua = DMWMMON::SpaceMon::UserAgent->new
-	( CA_DIR   => '/etc/grid-security/certificates', URL => $self->{'DATASVC'}, FORMAT   => 'perl', );
+    my $pua = DMWMMON::SpaceMon::UserAgent->new ( 
+	VERBOSE => $self->{'VERBOSE'},
+	DEBUG   => $self->{'DEBUG'},
+	URL     => $self->{'DATASVC'},
+	FORMAT  => 'perl',
+	);
     $pua->timeout ($timeout) if $timeout;
     $pua->Dump() if ($self->{'DEBUG'});
     $pua->CALL('storageusage');
@@ -87,9 +91,9 @@ sub writeToFile
     print "RecordIO writing to file: $where\n" if $self->{VERBOSE};
     open (my $fh, '>', $where) or die "Could not open file '$where' $!";
     my $dd = Data::Dumper->new(
-			       [ $record ],
-			       [ qw(record) ]
-			       );
+	[ $record ],
+	[ qw(record) ]
+	);
     print $fh $dd->Dump();
     # NR: it looks like Dump above empties the dumped object, so I can't
     # print it again into stdout
