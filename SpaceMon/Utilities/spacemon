@@ -33,7 +33,7 @@ my $me = basename($0);
 
 # Variables for handling command line options:
 my ($defaults, $debug, $verbose, $upload, $save, $show, $url, $node,
-     $storagedump, $configfile, $testnode, $ignorebadentries);
+     $storagedump, $configfile, $testnode, $ignorebadentries, $strict);
 # Here you can override class defaults:
 $debug = $verbose = 0;
 # Variables for spacemon objects:
@@ -64,6 +64,7 @@ GetOptions (
     'test' => \$testnode,
     'debug!' => \$debug,  # enables --nodebug option
     'verbose!' => \$verbose,
+    'strict!' => \$strict, # use --nostrict to overwrite existing record
     'url=s' => \$url,
     'config:s' => \$configfile,
     # Options for additional actions:
@@ -184,7 +185,8 @@ $testnode && $record->setNodeName('T2_Test_Buffer');
 print "Dump record returned by a parser: ", $record->dump(), "\n" if $debug;
 
 $rio = DMWMMON::SpaceMon::RecordIO->new(
-    DEBUG => $debug,
+    STRICT  => $strict,
+    DEBUG   => $debug,
     VERBOSE => $verbose,
     DATASVC => $url,
     );
