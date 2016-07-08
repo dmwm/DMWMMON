@@ -124,11 +124,13 @@ sub uploadRecord{
   #}
   my $method   = 'post';
   my $timeout  = 500;
-  my $pua = DMWMMON::SpaceMon::UserAgent->new (
-                                      URL        => $self->{'DATASVC'},
-                                      FORMAT    => 'perl',
-                                      CA_DIR    => '/etc/grid-security/certificates',
-                                     );
+  my $pua = DMWMMON::SpaceMon::UserAgent->new ( 
+      VERBOSE => $self->{'VERBOSE'},
+      DEBUG   => $self->{'DEBUG'},
+      URL     => $self->{'DATASVC'},
+      CA_DIR  => '/etc/grid-security/certificates',
+      FORMAT  => 'perl',
+      );
   my ($response,$content,$target);
   print "Begin to connect data service.....\n" if ($self->{'DEBUG'});
   $pua->timeout($timeout) if $timeout;
