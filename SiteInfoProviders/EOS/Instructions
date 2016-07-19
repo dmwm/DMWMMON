@@ -30,9 +30,10 @@ Here is an example of how to convert the contents and the date encripted in the 
 Note that we put converted dump in /tmp directory to avoid filling up the afs quota:
 
 inputdump=`readlink /afs/cern.ch/work/p/phedex/public/eos_dump/eos_files.txt.gz`
+dumpdir=`dirname /afs/cern.ch/work/p/phedex/public/eos_dump/eos_files.txt.gz`
 dumpdate=`echo $inputdump  | awk -F_ '{print $NF}' | awk -F[-.] '{print $1"-"$2"-"$3,$4":"$5":"$6 }'`
 outputdump=/tmp/eos_files.`date --date="$dumpdate" +%s`.txt
-zcat $inputdump | grep eos | sed 's|path=\(.*\) size=\([0-9]*\) .*|\1\|\2|' > $outputdump
+zcat $dumpdir/$inputdump | grep eos | sed 's|path=\(.*\) size=\([0-9]*\) .*|\1\|\2|' > $outputdump
 
 
 #More details:          
