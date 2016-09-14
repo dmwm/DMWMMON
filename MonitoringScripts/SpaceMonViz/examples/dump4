@@ -1,0 +1,8 @@
+{"index": {"_type": "dump_record", "_id": "b00b224dfa755f057a83cb5f2c97ee72", "_index": "testx"}}
+{"rlvl": 1, "timestamp": 1472204564, "name": "T2_GR_Ioannina", "dir": "/dpm/physics.uoi.gr/home/cms/store/kkk/", "space": 56418073}
+{"index": {"_type": "dump_record", "_id": "e8bd65945a8ad6a7d95ff136a130e55e", "_index": "testx"}}
+{"rlvl": -2, "timestamp": 1412294564, "name": "T2_GR_Ioannina", "dir": "/dpm/physics.uoi.gr/home/", "space": 13236248}
+{"index": {"_type": "dump_record", "_id": "9aa18485629ed909788ef6f8850ca3bb", "_index": "testx"}}
+{"rlvl": 0, "timestamp": 1472294564, "name": "T2_GR_Ioannina", "dir": "/dpm/physics.uoi.gr/home/cms/store/", "space": 1661501200}
+{"index": {"_type": "dump_record", "_id": "5fa91006eba7dc31b9b31f601925b136", "_index": "testx"}}
+{"rlvl": -2, "timestamp": 1472294564, "name": "T2_GR_Ioannina", "dir": "/fol1/fol2/fol3/", "space": 1661501200}
