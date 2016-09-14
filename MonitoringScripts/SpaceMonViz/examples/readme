@@ -1,0 +1,5 @@
+How to run the example:
+
+$ python proc.py ex_lfn2pfn.js ex_dump3 dump4
+
+Note: "dump4" is the output file
