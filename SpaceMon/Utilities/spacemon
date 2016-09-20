@@ -102,7 +102,7 @@ Output and verbosity control options:
 Overriding defaults:
   --url                   overrides default data service url
   --config      <file>    read local configuration rules from the file
-  --ignore-bad-entries    do not stop on parsing errors due to bad entriees in storage dump
+  --ignore-bad-entries    do not stop on parsing errors due to bad entries in storage dump
 EOF
 ;
     &DMWMMON::SpaceMon::UserAgent::auth_usage();
