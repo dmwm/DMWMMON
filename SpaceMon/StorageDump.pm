@@ -27,7 +27,11 @@ sub readDumpHead {
 	or die "open: $fullname: $!\n";
     my @headlines = <HEAD>;
     close HEAD;
-    return @headlines;
+    if ( @headlines) {
+        return @headlines;
+    } else {
+        die "ERROR: could not read first lines in file $fullname . Empty file? \n";
+    }
 }
 
 sub looksLikeXML{
