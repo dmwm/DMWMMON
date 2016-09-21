@@ -18,10 +18,16 @@ eos='/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select'
 eos='/afs/cern.ch/project/eos/installation/0.1.0-22d/bin/eos.select'
 	/afs/cern.ch/project/eos/installation/0.1.0-22d/bin/eos.select
 
-Inside script you may need to specify the full path to eos.select. 
+Inside script you may need to specify the full path to eos.select.
+
+The eosdump.sh script provides a CERN-customized example of a script using eos find
+to produce the storage dump. The find command is executed on one subdirectory at a time
+to limit memory usage and avoid crashes. The script is invoked without arguments:
+
+> ./eosdump.sh
 
 #Comments:  
-As of June 2016, eos dumps are routinely produced and stored in /afs/cern.ch/work/p/phedex/public/eos_dump/ 
+As of June 2016, eos dumps are routinely produced with eosdump.sh  and stored in /afs/cern.ch/work/p/phedex/public/eos_dump/ 
 in format returned by  eoscms find command, e.g. : 
 -sh-4.1$ zcat /afs/cern.ch/work/p/phedex/public/eos_dump/eos_files_2016-06-28-02-22-57.txt.gz | head -1 
 path=/eos/cms/store/PhEDEx_LoadTest07/LoadTest07_Debug_ES_PIC/CH_CERN/14/LoadTest07_PIC_43_Pl25mbl8jJTMy4hb_14 size=2690811136 checksum=eb450001 ctime=1422663496.704290000 mtime=1422663995.613289000
