@@ -1,5 +1,20 @@
+This directory contains data and examples for 
+various monitoring helper scripts 
+
+1) Alessandro's example to populate Elasticsearch with SpaceMon data. 
+
 How to run the example:
 
-$ python proc.py ex_lfn2pfn.js ex_dump3 dump4
+$ python ../proc.py ex_lfn2pfn.js ex_dump3 dump4
 
 Note: "dump4" is the output file
+
+2) Natalia's example of aggregating timestamps into a predefined timebin.
+
+To get spacemon data for all T1 sites from June 1, 2016 till current time:
+ wget -no-check-certificate -O /tmp/T1_ALL_dumpspacequery_sinceJune2016_level-1.out "https://cmsweb.cern.ch/dmwmmon/datasvc/perl/dumpspacequery?node=T1*&level=1&time_since=1464739200"
+
+perl  ../timebin.pl  /tmp/T1_ALL_dumpspacequery_sinceJune2016_level-1.out
+
+will produce timebin for the 25th week of 2016 (June 20-26) and print out the approximated values of the storage volume for each node.
+
