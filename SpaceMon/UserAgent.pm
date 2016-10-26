@@ -191,11 +191,11 @@ sub auth_usage
 {
   print <<EOF;
 
-      User authentication options: 
-        --cert_file|--key_file   - define user certificate files; 
-        These options must be set together, they may also point to one
-        user certificate proxy file. 
-        --ca_file|--ca_dir       - locations of the certificate authority
+User authentication options: 
+  --cert_file|--key_file  define user certificate files: these options
+                           must be set together, they may also point to 
+                            the same user certificate proxy file
+  --ca_file|--ca_dir      locations of the certificate authority
 EOF
 }
 
