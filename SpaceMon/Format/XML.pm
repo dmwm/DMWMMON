@@ -67,8 +67,8 @@ sub lookupTimeStamp{
     my $self = shift;
     print "I am in ",__PACKAGE__,"->lookupTimeStamp()\n" if $self->{VERBOSE};
     # Read first five lines of the dump
-    foreach (DMWMMON::SpaceMon::StorageDump::readDumpHead($self->{DUMPFILE}),5) {
-	#print "XML FILE line: " . $_;
+    foreach (DMWMMON::SpaceMon::StorageDump::readDumpHead($self->{DUMPFILE},5)) {
+	print "XML FILE line: " . $_ if $self->{VERBOSE};
 	if (m/<dump recorded=\"(\S+)\">/) {return convertToUnixTime($1)};
     }
     return undef;
