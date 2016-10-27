@@ -46,9 +46,15 @@ sub vPrint{
     $verbose && print "$me: " . $text . "\n";
 }
 
+# Call usage help if used with no arguments:
+ &usage if ( @ARGV == 0 );
+
 # Check useful for packaging. Print dependencies and exit:
 GetOptions("deps|d" => sub {print Dumper(%INC); exit;});
+
+# Make sure authentication options are processed before the check_auth is called
 &DMWMMON::SpaceMon::UserAgent::auth_getoptions();
+
 GetOptions (
     # various query options that print out information and exit:
     'help|h' => sub { &usage },
