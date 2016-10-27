@@ -1,15 +1,28 @@
+### Test suite for SpaceMon client tool 
+# Tests 4,5,6 may not be working with a fake test node, as of spacemon-client version 1.0.1 
+
+
+### Setting the defaults and locations
+# Assuming github structure: spacemon is located in the same directory as spacemon-test. 
+spacemon=`echo $0 | sed 's/-test$//'`
+
 testdir=/tmp/spacemon-tests.`date +%s`
 mkdir $testdir
-testnode= T2_Test_Buffer
+testnode=T2_Test_Buffer
 
-echo -e     "\n******* test1: Executing spacemon " 
-spacemon  2>&1 | tee $testdir/test1.log
+### Execute the tests
+# Each test prints output on the screen and redirects to the file in /tmp dir.
+# Redefine $testdir above if you do not want to pollute the /tmp, or prefer the log files 
+# stay persistent after the system reboot/upgrade. 
 
-echo -e     "\n******* test2: Executing spacemon -h " 
-spacemon -h  2>&1 | tee $testdir/test2.log
+echo -e     "\n******* test1: Executing $spacemon " 
+$spacemon  2>&1 | tee $testdir/test1.log
 
-echo -e     "\n******* test3: Executing spacemon --version  "
-spacemon --version  2>&1 | tee $testdir/test3.log
+echo -e     "\n******* test2: Executing $spacemon -h " 
+$spacemon -h  2>&1 | tee $testdir/test2.log
+
+echo -e     "\n******* test3: Executing $spacemon --version  "
+$spacemon --version  2>&1 | tee $testdir/test3.log
 
 echo -e     "\n******* Testing TXT format input file " 
 
@@ -21,8 +34,8 @@ echo -e     "\n******* Created file $dummydump "
 echo "/store/CSA07/2007/10/30/CSA07-CSA07JetMET-Tier0-A2-Stew/0046/CAB1B2FD-1288-DC11-8547-003048562842.root|3719230435|1331650563.42|4e18657" >>  $dummydump
 echo "/store/CSA07/2007/10/30/CSA07-CSA07JetMET-Tier0-A2-Stew/0047/0E30D3EB-8288-DC11-B153-00304855D49C.root|4168290793|1331650576.56|e45742b2" >>  $dummydump
 
-echo -e     "\n******* Test4: Executing spacemon --node $testnode --dump $dummydump "
-spacemon --node $testnode --dump $dummydump 2>&1 | tee $testdir/test4.log
+echo -e     "\n******* Test4: Executing $spacemon --node $testnode --dump $dummydump "
+$spacemon --node $testnode --dump $dummydump 2>&1 | tee $testdir/test4.log
 
 echo -e     "\n******* Testing XML format and compressed input file" 
 
@@ -38,8 +51,10 @@ echo '</entry-set></dump>' >> $dummydump
 
 gzip $dummydump
 
-echo -e     "\n******* Test5: Executing spacemon --node $testnode -dump $dummydump.gz "
-spacemon --node $testnode --dump $dummydump.gz 2>&1  | tee $testdir/test5.log
+echo -e     "\n******* Test5: Executing $spacemon --node $testnode -dump $dummydump.gz "
+$spacemon --node $testnode --dump $dummydump.gz 2>&1  | tee $testdir/test5.log
 
-echo -e     "\n******* Test6: Executing spacemon --node $testnode --dump $dummydump.gz --upload " 
-spacemon spacemon --node $testnode --dump $dummydump.gz --upload 2>&1  | tee $testdir/test6.log
+echo -e     "\n******* Test6: Executing $spacemon --node $testnode --dump $dummydump.gz --upload " 
+$spacemon --node $testnode --dump $dummydump.gz --upload 2>&1  | tee $testdir/test6.log
+
+echo -e     "\n******* Tests OUTPUT can be found in $testdir "
