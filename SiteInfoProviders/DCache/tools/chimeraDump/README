@@ -21,7 +21,6 @@ Furthermore it uses some (more or less) standard python modules:
     OptionParser?
     bz2
     gzip (if requested via an option)
-    sets 
 
 How it works
 

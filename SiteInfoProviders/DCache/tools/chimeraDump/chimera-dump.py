@@ -199,16 +199,12 @@ if not ascii: # again for syncat xml output
 
 if infile:
     try:
-        from sets import Set
-    except:
-        sys.exit("Module sets not found, option -f not possible")
-    try:
         infi=open(infile,'r')
     except:
         sys.exit("File for input not found: %s" % infile)
-    cs=Set([i.rstrip('\n').strip() for i in infi.readlines()])
+    cs=set([i.rstrip('\n').strip() for i in infi.readlines()])
     infi.close()
-    chimset=Set([i[0] for i in flist])
+    chimset=set([i[0] for i in flist])
     checkpnfs=cs.intersection(chimset)
     if debug: l.write(spaces+"Number of files in input file AND chimera DB: %i" % len(checkpnfs))
     if debug: l.write(spaces+"Number of files in input file: %i" % len(cs))
