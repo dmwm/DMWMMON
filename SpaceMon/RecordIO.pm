@@ -134,7 +134,6 @@ sub uploadRecord{
       VERBOSE => $self->{'VERBOSE'},
       DEBUG   => $self->{'DEBUG'},
       URL     => $self->{'DATASVC'},
-      CA_DIR  => '/etc/grid-security/certificates',
       FORMAT  => 'perl',
       );
   my ($response,$content,$target);
