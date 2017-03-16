@@ -8,3 +8,9 @@ for newly added tools and scripts.
 - check a single file and output PFN,Size,Time stamp and check sum (optional)
 - can be used with 'find' on hadoop data area mounted with FUSE
 - more details in https://savannah.cern.ch/support/index.php?126344#comment22
+
+2017-03-10 C. Vuosalo added scripts from Wisconsin:
+* storagedump.sh
+- Efficiently gets file information from HDFS, formats it, and uploads it to the database
+* procfilelist.py
+- Python script that efficiently re-formats the file list dump from HDFS
