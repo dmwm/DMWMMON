@@ -9,6 +9,7 @@ spacemon=`echo $0 | sed 's/-test$//'`
 testdir=/tmp/spacemon-tests.`date +%s`
 mkdir $testdir
 testnode=T2_Test_Buffer
+testnode=T3_US_FNALLPC
 
 ### Execute the tests
 # Each test prints output on the screen and redirects to the file in /tmp dir.
@@ -50,11 +51,39 @@ echo '<entry name="/dpm/in2p3.fr/home/cms/trivcat/store/mc/JobRobot/RelValProdTT
 echo '</entry-set></dump>' >> $dummydump
 
 gzip $dummydump
+# New chimera-dump syntax for dCache 2.15+ Aachen example: 
 
-echo -e     "\n******* Test5: Executing $spacemon --node $testnode -dump $dummydump.gz "
+dummydump2=$testdir/example2.xml
+(
+cat <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<cat xmlns="http://www.dcache.org/PROPOSED/2008/01/Cat"
+        xmlns:dCache="http://www.dcache.org/PROPOSED/2008/01/Cat/dCache">
+<dump recorded="2017-04-01T12:02:04Z">
+<entry-set>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/joe/crab_Wprime_Data/Tau/WPrimeToTaus_data/161103_135541/0000/hist_analysis_413.root"><size>2092237</size><dCache:atime>1478192527.0</dCache:atime><checksum>56dfd4a9</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith1/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith2/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith3/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith4/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith5/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith6/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith7/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith8/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith9/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+<entry name="/pnfs/physik.rwth-aachen.de/cms/store/user/smith10/ttbb_v2a/meta/mu_syst_jerDown_tuple/B/task_report_Bndq4aypk5KR5A.json"><size>3142</size><dCache:atime>1456014607.0</dCache:atime><checksum>070bcb8c</checksum></entry>
+</entry-set>
+EOF
+) > $dummydump2
+bzip2 $dummydump2
+
+echo -e     "\n******* Test5: Executing $spacemon --node $testnode -dump ${dummydump}.gz "
 $spacemon --node $testnode --dump $dummydump.gz 2>&1  | tee $testdir/test5.log
 
-echo -e     "\n******* Test6: Executing $spacemon --node $testnode --dump $dummydump.gz --upload " 
-$spacemon --node $testnode --dump $dummydump.gz --upload 2>&1  | tee $testdir/test6.log
+echo -e     "\n******* Test6: Executing $spacemon --node $testnode -dump ${dummydump2}.bz2 "
+$spacemon --node $testnode --dump ${dummydump2}.bz2 2>&1  | tee $testdir/test6.log
+
+#echo -e     "\n******* Test7: Executing $spacemon --node $testnode --dump $dummydump.gz --upload " 
+#$spacemon --node $testnode --dump $dummydump.gz --upload 2>&1  | tee $testdir/test7.log
 
 echo -e     "\n******* Tests OUTPUT can be found in $testdir "
