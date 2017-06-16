@@ -7,7 +7,8 @@ try:
 except:
     sys.exit("""xml.sax python modul needed, please install""")
 try: #Import some variables from the config file, which is thought to be in the same directory
-    from cd_conf import host,passwd,port,user,db,tmpname,sqldict,mydescription,usage,mgz,rootdir,confversion
+    from cd_conf import (host, passwd, port, user, db, tmpname, sqldict_pre2_15, sqldict_post2_15, 
+                         mydescription, usage, mgz, rootdir, confversion)
 except:
     sys.exit("""No correct cd_conf.py file found in this directory (or the Pythonpath)""")
 
@@ -18,7 +19,7 @@ if len(sys.argv)<2:
     sys.argv.append('-h')
 try:
     from optparse import OptionParser
-    parser = OptionParser(usage=usage, version="%prog 0.9.1", description=mydescription)
+    parser = OptionParser(usage=usage, version="%prog 0.9.5", description=mydescription)
     parser.add_option('-o', '--output', help = "Name of outputfile, xml.bz2 will be added in any case", action = "store", dest = "filen", default = tmpname)
     parser.add_option('-s', '--string', help = "String applied on search result: either Path like /data/atlas/atlasmcdisk or pool like pool-01", action = "store", dest = "pat", default = None)
     parser.add_option('-v', '--vo', help = "Name of vo: just for xml file", action = "store", dest = "vo", default = '')
@@ -29,6 +30,7 @@ try:
     parser.add_option('-D', '--Debug', help = "More Debugging Modus, may create BIG log files in /tmp", action = "store_true",dest = "mdebug", default = False)
     parser.add_option('-c', '--check', help = "Different checks: pool: give location info; dump give size info; checksum give checksum info; disk give all files on pool from string,atime gives first appearance in DB, NoP, Mpools, Spools search files not on pools, on multiple pools or on a single pool", action = "store", dest = "check", default = "dump")
     parser.add_option('-f', '--file', help = "File with given pnfsids which should be queried", action = "store", dest = "infile", default = '')
+    parser.add_option('--oldDB', help = "Use if dCache version is < 2.15", action = "store_true", dest = "oldVersion")
     (options, args) = parser.parse_args()
     filen=options.filen
     vo=lower(strip(options.vo))
@@ -40,6 +42,8 @@ try:
     rootdir=options.rootdir
     if mdebug: debug=True
     if options.mgz: mgz='gz'
+    sqldict = sqldict_post2_15
+    if options.oldVersion:  sqldict = sqldict_pre2_15
     try:
         check,xmltag=sqldict[options.check]
     except:
@@ -107,7 +111,7 @@ def get_root():
 
 def search_parent(child):
   """ """
-  cmd = "select ipnfsid,iname,iparent from t_dirs where ipnfsid = '%s' and iname not in ('.','..')" % child[2]
+  cmd = "select ichild,iname,iparent from t_dirs where ichild = '%s' and iname not in ('.','..')" % child[2]
   global spaces
   if mdebug: l.write("%sSQLQuery: %s \n" % (spaces,cmd))
   mycont = True
@@ -115,7 +119,7 @@ def search_parent(child):
       parent = getresult(con,cmd)[0]
       if debug: l.write(spaces+"Found Parent: %s (pnfsid: %s) of dir %s \n" % (parent[1],parent[2],parent[0]))
   except IndexError:
-      l.write("Error: pnfsid %s is parent but has no parent himself\n" % child[2])
+      l.write("Error: inumber %s is parent but has no parent himself\n" % child[2])
       l.write("->Error hint: %s orphaned\n" % child[1])
       return False
   #####    
@@ -199,12 +203,16 @@ if not ascii: # again for syncat xml output
 
 if infile:
     try:
+        from sets import Set
+    except:
+        sys.exit("Module sets not found, option -f not possible")
+    try:
         infi=open(infile,'r')
     except:
         sys.exit("File for input not found: %s" % infile)
-    cs=set([i.rstrip('\n').strip() for i in infi.readlines()])
+    cs=Set([i.rstrip('\n').strip() for i in infi.readlines()])
     infi.close()
-    chimset=set([i[0] for i in flist])
+    chimset=Set([i[0] for i in flist])
     checkpnfs=cs.intersection(chimset)
     if debug: l.write(spaces+"Number of files in input file AND chimera DB: %i" % len(checkpnfs))
     if debug: l.write(spaces+"Number of files in input file: %i" % len(cs))
