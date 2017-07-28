@@ -75,16 +75,18 @@ sub lookupTimeStamp{
 }
 
 sub convertToUnixTime {
-# parses time formats like "2012-02-27T12:33:23.902495" or "2012-02-20T14:46:39Z" 
+# parses time formats like "2012-02-27T12:33:23.902495" (local) or "2012-02-20T14:46:39Z" (UTC)
 # and returns unix time or undef if not parsable.
   my ($time) = shift;
-  my $unixTime = undef;
-  my ($localtime, $mon, $year, $d, $t, @d, @t);
-  if ($time =~ m/^(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)\D+/)
-    {$unixTime = timelocal($6, $5, $4, $3, $2-1, $1-1900)}
-  #$localtime = localtime($unixTime);
-  #print "the localtime:", $localtime->mon+1,"  ", $localtime->year+1900, "\n";
-  return $unixTime;
+  if ($time =~ m/^(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)(\D+)/) {
+    if ($7 eq "Z") {
+      return timegm($6, $5, $4, $3, $2-1, $1-1900);
+    } else {
+      return timelocal($6, $5, $4, $3, $2-1, $1-1900);
+    }
+  } else {
+    return undef
+  }
 }
 
 1;
